@@ -9,7 +9,7 @@ Click **remplir avec le compte de démonstration**, then **Se connecter** (it is
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
-![API Platform](https://img.shields.io/badge/API-API_Platform_%2B_JWT-38A9B4)
+![RecetteVie API](https://img.shields.io/badge/uses-RecetteVie_API_(JWT)-38A9B4)
 [![Tests](https://github.com/puremax-lab/Semainier/actions/workflows/tests.yml/badge.svg)](https://github.com/puremax-lab/Semainier/actions/workflows/tests.yml)
 
 ![The week](docs/screenshots/week.png)
@@ -37,7 +37,7 @@ sequenceDiagram
 - **Log in** with a RecetteVie account. The session survives a reload until the token expires.
 - **Plan the week**: a lunch and a dinner for each of the 7 days. Pick a recipe in a side panel with search and infinite scroll, change it or remove it.
 - **Move between weeks**: previous, current, next.
-- **Shopping list**: the ingredients of the week's recipes, each line once, with the recipes it is for. Lines can be ticked off, and are remembered per week.
+- **Shopping list**: the ingredients of the week's recipes, each line once, with the recipes it is for. Lines can be ticked off, and are remembered per week in the browser.
 - **Responsive**: 7 columns on a desktop, the days one under the other on a phone.
 
 ## How it is built
@@ -56,11 +56,13 @@ On the RecetteVie side, the API work is described in [its README](https://github
 
 ## Screens
 
-| Choosing a recipe | Phone |
+| Choosing a recipe | Shopping list |
 |---|---|
-| ![Recipe picker](docs/screenshots/picker.png) | ![Phone](docs/screenshots/mobile-week.png) |
+| ![Recipe picker](docs/screenshots/picker.png) | ![Shopping list](docs/screenshots/shopping.png) |
 
-![Login](docs/screenshots/login.png)
+| Login | Phone |
+|---|---|
+| ![Login](docs/screenshots/login.png) | ![Phone](docs/screenshots/mobile-week.png) |
 
 ## Run it locally
 
