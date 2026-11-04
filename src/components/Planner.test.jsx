@@ -81,6 +81,6 @@ describe('Planner', () => {
     const onLogout = vi.fn()
     render(<Planner token="expired" onLogout={onLogout} today={monday} />)
 
-    await vi.waitFor(() => expect(onLogout).toHaveBeenCalledWith('Session expirée, reconnectez-vous.'))
+    await vi.waitFor(() => expect(onLogout).toHaveBeenCalledWith('errors.sessionExpired'))
   })
 })

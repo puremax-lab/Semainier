@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLanguage } from '../i18n/language.js'
 
 // Ticked lines are remembered per week in this browser only.
 const storageKey = (weekKey) => `semainier.checked.${weekKey}`
@@ -12,6 +13,7 @@ function loadChecked(weekKey) {
 }
 
 export default function ShoppingList({ weekKey, items }) {
+  const { t } = useLanguage()
   const [checked, setChecked] = useState(() => loadChecked(weekKey))
 
   useEffect(() => {
@@ -36,12 +38,12 @@ export default function ShoppingList({ weekKey, items }) {
   return (
     <section className="shopping" aria-labelledby="shopping-title">
       <div className="shopping-head">
-        <h2 id="shopping-title">Liste de courses</h2>
-        {items.length > 0 && <p className="muted">{remaining === 0 ? 'Tout est pris.' : `${remaining} sur ${items.length} à acheter`}</p>}
+        <h2 id="shopping-title">{t('shopping.title')}</h2>
+        {items.length > 0 && <p className="muted">{remaining === 0 ? t('shopping.done') : t('shopping.remaining', { remaining, total: items.length })}</p>}
       </div>
 
       {items.length === 0
-        ? <p className="muted">Ajoutez des recettes à la semaine : leurs ingrédients s'afficheront ici.</p>
+        ? <p className="muted">{t('shopping.empty')}</p>
         : (
           <ul className="shopping-list">
             {items.map((item) => (

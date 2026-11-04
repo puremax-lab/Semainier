@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLanguage } from '../i18n/language.js'
 import { fetchRecipes, imageUrl } from '../lib/api.js'
 import { formatDuration } from '../lib/format.js'
+import { categoryName, recipeTitle } from '../lib/recipe.js'
 import RecipeImage from './RecipeImage.jsx'
 
 /**
  * Side panel to pick a recipe for a slot. The list loads the next page by itself when its end
- * scrolls into view; the "Charger la suite" button does the same by hand.
+ * scrolls into view; the "Load more" button does the same by hand.
  */
 export default function RecipePicker({ slotLabel, onChoose, onClose }) {
+  const { lang, t } = useLanguage()
   const dialog = useRef(null)
   const sentinel = useRef(null)
   const [query, setQuery] = useState('')
@@ -41,7 +44,7 @@ export default function RecipePicker({ slotLabel, onChoose, onClose }) {
 
   useEffect(() => {
     let current = true
-    fetchRecipes({ page, title: search })
+    fetchRecipes({ page, title: search, lang })
       .then((result) => {
         if (!current) return
         setRecipes((list) => (page === 1 ? result.recipes : [...list, ...result.recipes]))
@@ -51,7 +54,7 @@ export default function RecipePicker({ slotLabel, onChoose, onClose }) {
       .catch(() => current && setError(true))
       .finally(() => current && setLoaded(`${search}|${page}`))
     return () => { current = false }
-  }, [page, search])
+  }, [page, search, lang])
 
   useEffect(() => {
     if (!hasMore || loading || !sentinel.current || typeof IntersectionObserver === 'undefined') return
@@ -64,24 +67,24 @@ export default function RecipePicker({ slotLabel, onChoose, onClose }) {
     <dialog ref={dialog} className="picker" aria-labelledby="picker-title" onCancel={(e) => { e.preventDefault(); onClose() }}>
       <div className="picker-head">
         <p className="kicker">{slotLabel}</p>
-        <h2 id="picker-title">Choisir une recette</h2>
-        <button type="button" className="link picker-close" onClick={onClose}>Fermer</button>
+        <h2 id="picker-title">{t('picker.title')}</h2>
+        <button type="button" className="link picker-close" onClick={onClose}>{t('picker.close')}</button>
       </div>
 
-      <label className="visually-hidden" htmlFor="recipe-search">Rechercher une recette</label>
-      <input id="recipe-search" type="search" className="picker-search" placeholder="Rechercher : quiche, curry…" value={query} onChange={(e) => setQuery(e.target.value)} autoFocus />
+      <label className="visually-hidden" htmlFor="recipe-search">{t('picker.search')}</label>
+      <input id="recipe-search" type="search" className="picker-search" placeholder={t('picker.placeholder')} value={query} onChange={(e) => setQuery(e.target.value)} autoFocus />
 
-      {error && <p className="message message-error" role="alert">Les recettes n'ont pas pu être chargées.</p>}
-      {!loading && !error && recipes.length === 0 && <p className="muted">Aucune recette ne correspond à « {search} ».</p>}
+      {error && <p className="message message-error" role="alert">{t('errors.recipes')}</p>}
+      {!loading && !error && recipes.length === 0 && <p className="muted">{t('picker.empty', { search })}</p>}
 
       <ul className="picker-list">
         {recipes.map((recipe) => (
           <li key={recipe.id}>
             <button type="button" className="picker-item" onClick={() => onChoose(recipe)}>
-              <RecipeImage src={imageUrl(recipe.imageName)} title={recipe.title} className="picker-thumb" />
+              <RecipeImage src={imageUrl(recipe.imageName)} title={recipeTitle(recipe, lang)} className="picker-thumb" />
               <span>
-                <span className="picker-title">{recipe.title}</span>
-                <span className="picker-meta">{recipe.category?.name} · {formatDuration(recipe.duration)}</span>
+                <span className="picker-title">{recipeTitle(recipe, lang)}</span>
+                <span className="picker-meta">{categoryName(recipe.category, lang)} · {formatDuration(recipe.duration, lang)}</span>
               </span>
             </button>
           </li>
@@ -91,11 +94,11 @@ export default function RecipePicker({ slotLabel, onChoose, onClose }) {
       {hasMore && (
         <div ref={sentinel} className="picker-more">
           <button type="button" className="link" onClick={() => setPage((p) => p + 1)} disabled={loading}>
-            {loading ? 'Chargement…' : 'Charger la suite'}
+            {loading ? t('picker.loading') : t('picker.more')}
           </button>
         </div>
       )}
-      {loading && !hasMore && <p className="muted" role="status">Chargement…</p>}
+      {loading && !hasMore && <p className="muted" role="status">{t('picker.loading')}</p>}
     </dialog>
   )
 }

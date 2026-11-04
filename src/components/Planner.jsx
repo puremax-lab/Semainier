@@ -1,26 +1,27 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useLanguage } from '../i18n/language.js'
 import { AuthError, fetchWeek, planMeal, removeMeal } from '../lib/api.js'
 import { addDays, startOfWeek, toIsoDay, weekDays, weekLabel } from '../lib/dates.js'
 import { buildShoppingList } from '../lib/shopping.js'
+import LanguageSwitch from './LanguageSwitch.jsx'
 import MealSlot from './MealSlot.jsx'
 import RecipePicker from './RecipePicker.jsx'
 import ShoppingList from './ShoppingList.jsx'
 import { RECETTEVIE_URL } from '../lib/links.js'
 
-const MEALS = [
-  { key: 'lunch', label: 'Midi' },
-  { key: 'dinner', label: 'Soir' },
-]
+const MEALS = ['lunch', 'dinner']
 
 /** `today` is only given by the tests, to show a fixed week. */
 export default function Planner({ token, firstname, onLogout, today }) {
+  const { lang, t } = useLanguage()
   const [monday, setMonday] = useState(() => startOfWeek(today ?? new Date()))
   const [entries, setEntries] = useState([])
   const [loadedWeek, setLoadedWeek] = useState(null) // the week whose entries are shown
   const [error, setError] = useState(false)
-  const [picking, setPicking] = useState(null) // { day, meal, label } of the slot being filled
+  const [picking, setPicking] = useState(null) // { day, meal, dayIndex } of the slot being filled
 
   const days = useMemo(() => weekDays(monday), [monday])
+  const dayNames = weekDays(monday, lang).map((day) => day.name)
   const weekKey = toIsoDay(monday)
   const loading = loadedWeek !== weekKey
 
@@ -43,7 +44,7 @@ export default function Planner({ token, firstname, onLogout, today }) {
   }, [token, days, fail])
 
   const bySlot = useMemo(() => new Map(entries.map((entry) => [`${entry.day}|${entry.meal}`, entry])), [entries])
-  const shopping = useMemo(() => buildShoppingList(entries), [entries])
+  const shopping = useMemo(() => buildShoppingList(entries, lang), [entries, lang])
 
   async function choose(recipe) {
     const { day, meal } = picking
@@ -71,39 +72,42 @@ export default function Planner({ token, firstname, onLogout, today }) {
       <header className="masthead">
         <div className="masthead-start">
           <p className="brand">Semainier</p>
-          <a className="back-link" href={RECETTEVIE_URL}>Toutes les recettes sur RecetteVie</a>
+          <a className="back-link" href={RECETTEVIE_URL}>{t('header.allRecipes')}</a>
         </div>
-        <p className="account">
-          {firstname ? `Bonjour ${firstname}` : 'Connecté'}
-          <button type="button" className="link" onClick={() => onLogout()}>Se déconnecter</button>
-        </p>
+        <div className="masthead-end">
+          <p className="account">
+            {firstname ? t('header.hello', { name: firstname }) : t('header.loggedIn')}
+            <button type="button" className="link" onClick={() => onLogout()}>{t('header.logout')}</button>
+          </p>
+          <LanguageSwitch />
+        </div>
       </header>
 
       <main>
         <div className="week-head">
-          <h1>Semaine <span>{weekLabel(monday)}</span></h1>
-          <nav className="week-nav" aria-label="Changer de semaine">
-            <button type="button" className="link" onClick={() => setMonday(addDays(monday, -7))} aria-label="Semaine précédente">← Précédente</button>
-            <button type="button" className="link" onClick={() => setMonday(startOfWeek(new Date()))}>Cette semaine</button>
-            <button type="button" className="link" onClick={() => setMonday(addDays(monday, 7))} aria-label="Semaine suivante">Suivante →</button>
+          <h1>{t('week.heading')} <span>{weekLabel(monday, lang)}</span></h1>
+          <nav className="week-nav" aria-label={t('week.nav')}>
+            <button type="button" className="link" onClick={() => setMonday(addDays(monday, -7))} aria-label={t('week.previousLabel')}>{t('week.previous')}</button>
+            <button type="button" className="link" onClick={() => setMonday(startOfWeek(new Date()))}>{t('week.current')}</button>
+            <button type="button" className="link" onClick={() => setMonday(addDays(monday, 7))} aria-label={t('week.nextLabel')}>{t('week.next')}</button>
           </nav>
         </div>
 
-        {error && <p className="message message-error" role="alert">Impossible de joindre RecetteVie. Réessayez dans un instant.</p>}
+        {error && <p className="message message-error" role="alert">{t('errors.unreachable')}</p>}
 
-        <section className={`week ${loading ? 'is-loading' : ''}`} aria-label={`Repas de la semaine ${weekLabel(monday)}`} aria-busy={loading}>
-          {days.map((day) => (
+        <section className={`week ${loading ? 'is-loading' : ''}`} aria-label={t('week.meals', { label: weekLabel(monday, lang) })} aria-busy={loading}>
+          {days.map((day, index) => (
             <div className="day" key={day.iso}>
               <h2 className="day-name">
-                <span>{day.name}</span>
+                <span>{dayNames[index]}</span>
                 <span className="day-number">{day.date.getDate()}</span>
               </h2>
               {MEALS.map((meal) => (
                 <MealSlot
-                  key={meal.key}
-                  label={meal.label}
-                  entry={bySlot.get(`${day.iso}|${meal.key}`)}
-                  onAdd={() => setPicking({ day: day.iso, meal: meal.key, label: `${day.name} ${meal.label.toLowerCase()}` })}
+                  key={meal}
+                  label={t(`meal.${meal}`)}
+                  entry={bySlot.get(`${day.iso}|${meal}`)}
+                  onAdd={() => setPicking({ day: day.iso, meal, dayIndex: index })}
                   onRemove={remove}
                 />
               ))}
@@ -115,15 +119,15 @@ export default function Planner({ token, firstname, onLogout, today }) {
       </main>
 
       <footer className="footer">
-        <p>Semainier · projet portfolio de puremax-lab · recettes et photos de <a href={RECETTEVIE_URL}>RecetteVie</a></p>
+        <p>{t('footer.about')}<a href={RECETTEVIE_URL}>RecetteVie</a></p>
         <p>
-          <a href="https://github.com/puremax-lab/Semainier">Code source</a>
-          <a href="https://github.com/puremax-lab">GitHub puremax-lab</a>
-          <a href={`${RECETTEVIE_URL}/mentions-legales`}>Mentions légales</a>
+          <a href="https://github.com/puremax-lab/Semainier">{t('footer.source')}</a>
+          <a href="https://github.com/puremax-lab">{t('footer.github')}</a>
+          <a href={`${RECETTEVIE_URL}/mentions-legales`}>{t('footer.legal')}</a>
         </p>
       </footer>
 
-      {picking && <RecipePicker slotLabel={picking.label} onChoose={choose} onClose={() => setPicking(null)} />}
+      {picking && <RecipePicker slotLabel={`${dayNames[picking.dayIndex]} ${t(`meal.${picking.meal}`).toLowerCase()}`} onChoose={choose} onClose={() => setPicking(null)} />}
     </div>
   )
 }

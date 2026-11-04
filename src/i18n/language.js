@@ -1,0 +1,34 @@
+import { createContext, useContext } from 'react'
+import { LANGUAGES, MESSAGES } from './messages.js'
+
+const KEY = 'semainier.lang'
+const DEFAULT = 'fr'
+
+export function loadLanguage() {
+  try {
+    const stored = localStorage.getItem(KEY)
+    return LANGUAGES.includes(stored) ? stored : DEFAULT
+  } catch {
+    return DEFAULT
+  }
+}
+
+export function saveLanguage(lang) {
+  try {
+    localStorage.setItem(KEY, lang)
+  } catch {
+    // Private browsing: the choice lasts until the next reload.
+  }
+}
+
+/** The text for a key, with {placeholders} filled in. An unknown key is returned as it is. */
+export function translate(lang, key, values = {}) {
+  const text = MESSAGES[lang][key] ?? key
+  return text.replace(/\{(\w+)\}/g, (_, name) => values[name] ?? '')
+}
+
+export const LanguageContext = createContext({ lang: DEFAULT, setLang: () => {}, t: (key, values) => translate(DEFAULT, key, values) })
+
+export function useLanguage() {
+  return useContext(LanguageContext)
+}

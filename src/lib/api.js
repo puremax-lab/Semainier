@@ -3,6 +3,7 @@
 
 const ROOT = import.meta.env.VITE_RECETTEVIE_PATH ?? ''
 
+/** Its message is a translation key, shown to the member. */
 export class AuthError extends Error {}
 
 export function imageUrl(imageName) {
@@ -20,8 +21,8 @@ async function request(path, { method = 'GET', body, token } = {}) {
     body: body === undefined ? undefined : JSON.stringify(body),
   })
 
-  if (response.status === 401) throw new AuthError('Session expirée, reconnectez-vous.')
-  if (!response.ok) throw new Error(`L'API a répondu ${response.status}.`)
+  if (response.status === 401) throw new AuthError('errors.sessionExpired')
+  if (!response.ok) throw new Error(`API answered ${response.status}`)
   return response.status === 204 ? null : response.json()
 }
 
@@ -32,15 +33,15 @@ export async function login(email, password) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
   })
-  if (response.status === 401) throw new AuthError('Email ou mot de passe incorrect.')
-  if (!response.ok) throw new Error(`L'API a répondu ${response.status}.`)
+  if (response.status === 401) throw new AuthError('errors.badCredentials')
+  if (!response.ok) throw new Error(`API answered ${response.status}`)
   return (await response.json()).token
 }
 
 /** One page of recipes (12 per page), with the total to know whether more pages follow. */
-export async function fetchRecipes({ page = 1, title = '', category = '' } = {}) {
+export async function fetchRecipes({ page = 1, title = '', category = '', lang = 'fr' } = {}) {
   const params = new URLSearchParams({ page })
-  if (title) params.set('title', title)
+  if (title) params.set(lang === 'en' ? 'titleEn' : 'title', title)
   if (category) params.set('category.slug', category)
   const data = await request(`/recipes?${params}`)
   return { recipes: data.member, total: data.totalItems }

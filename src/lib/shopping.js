@@ -1,3 +1,5 @@
+import { recipeIngredients, recipeTitle } from './recipe.js'
+
 // Builds the shopping list of a week from its planned recipes.
 
 /** Lower case, single spaces, no accents: "Sel, poivre " and "sel, Poivre" are the same line. */
@@ -10,7 +12,7 @@ export function normalize(text) {
  * several recipes appears once, with the recipes it is for. A recipe planned twice
  * counts once: quantities are free text in RecetteVie, so they are not added up.
  */
-export function buildShoppingList(entries) {
+export function buildShoppingList(entries, lang = 'fr') {
   const lines = new Map()
   const seenRecipes = new Set()
 
@@ -18,11 +20,11 @@ export function buildShoppingList(entries) {
     if (seenRecipes.has(recipe.id)) continue
     seenRecipes.add(recipe.id)
 
-    for (const ingredient of recipe.ingredients) {
+    for (const ingredient of recipeIngredients(recipe, lang)) {
       const key = normalize(ingredient)
       if (!key) continue
       if (!lines.has(key)) lines.set(key, { key, text: ingredient.trim(), recipes: [] })
-      lines.get(key).recipes.push(recipe.title)
+      lines.get(key).recipes.push(recipeTitle(recipe, lang))
     }
   }
 

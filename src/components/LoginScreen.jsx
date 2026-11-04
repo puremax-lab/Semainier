@@ -1,10 +1,13 @@
 import { useState } from 'react'
-import { login } from '../lib/api.js'
+import { useLanguage } from '../i18n/language.js'
+import { AuthError, login } from '../lib/api.js'
 import { RECETTEVIE_URL } from '../lib/links.js'
+import LanguageSwitch from './LanguageSwitch.jsx'
 
 const DEMO_ACCOUNT = { email: 'camille@recettevie.test', password: 'password' }
 
 export default function LoginScreen({ notice, onLogin }) {
+  const { t } = useLanguage()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -17,7 +20,7 @@ export default function LoginScreen({ notice, onLogin }) {
     try {
       onLogin(await login(email, password))
     } catch (e) {
-      setError(e.message)
+      setError(e instanceof AuthError ? e.message : 'errors.unreachable')
       setPending(false)
     }
   }
@@ -29,36 +32,36 @@ export default function LoginScreen({ notice, onLogin }) {
 
   return (
     <main className="login">
+      <div className="login-lang"><LanguageSwitch /></div>
       <div className="login-intro">
         <p className="kicker">Semainier</p>
-        <h1>Les repas de la semaine, sur une seule page.</h1>
+        <h1>{t('login.title')}</h1>
         <p className="lead">
-          Choisissez une recette de <a href={RECETTEVIE_URL}>RecetteVie</a> pour
-          chaque midi et chaque soir. La liste de courses se fait toute seule.
+          {t('login.leadStart')}<a href={RECETTEVIE_URL}>RecetteVie</a>{t('login.leadEnd')}
         </p>
       </div>
 
       <form className="login-form" onSubmit={submit} noValidate>
-        <h2>Connexion</h2>
-        <p className="muted">Avec votre compte RecetteVie.</p>
-        {notice && <p className="message" role="status">{notice}</p>}
-        {error && <p className="message message-error" role="alert">{error}</p>}
+        <h2>{t('login.heading')}</h2>
+        <p className="muted">{t('login.account')}</p>
+        {notice && <p className="message" role="status">{t(notice)}</p>}
+        {error && <p className="message message-error" role="alert">{t(error)}</p>}
 
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email">{t('login.email')}</label>
         <input id="email" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
-        <label htmlFor="password">Mot de passe</label>
+        <label htmlFor="password">{t('login.password')}</label>
         <input id="password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
         <button type="submit" className="button" disabled={pending || !email || !password}>
-          {pending ? 'Connexion…' : 'Se connecter'}
+          {pending ? t('login.pending') : t('login.submit')}
         </button>
 
         <p className="demo">
-          Pour essayer : <button type="button" className="link" onClick={fillDemo}>remplir avec le compte de démonstration</button>
+          {t('login.tryIt')}<button type="button" className="link" onClick={fillDemo}>{t('login.fillDemo')}</button>
         </p>
         <p className="demo">
-          Pas encore de compte ? <a href={`${RECETTEVIE_URL}/inscription`}>Créez-le sur RecetteVie</a>, il sert aussi ici.
+          {t('login.noAccount')}<a href={`${RECETTEVIE_URL}/inscription`}>{t('login.signUp')}</a>{t('login.signUpEnd')}
         </p>
       </form>
     </main>
