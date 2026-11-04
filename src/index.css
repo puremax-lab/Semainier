@@ -59,6 +59,8 @@ img { display: block; max-width: 100%; }
 .page { max-width: 88rem; margin: 0 auto; padding: 0 clamp(1rem, 3vw, 2.5rem); }
 .masthead { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 1.25rem 0; border-bottom: 1px solid var(--ink); }
 .brand { font-family: var(--serif); font-style: italic; font-size: 1.6rem; margin: 0; }
+.masthead-start { display: flex; align-items: baseline; flex-wrap: wrap; gap: .25rem 1.25rem; }
+.back-link { font-size: .9rem; }
 .account { margin: 0; font-size: .9rem; display: flex; gap: 1rem; align-items: baseline; }
 
 .week-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem 2rem; padding: 2.5rem 0 1.5rem; }

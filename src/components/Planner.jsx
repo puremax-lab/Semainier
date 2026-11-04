@@ -5,6 +5,7 @@ import { buildShoppingList } from '../lib/shopping.js'
 import MealSlot from './MealSlot.jsx'
 import RecipePicker from './RecipePicker.jsx'
 import ShoppingList from './ShoppingList.jsx'
+import { RECETTEVIE_URL } from '../lib/links.js'
 
 const MEALS = [
   { key: 'lunch', label: 'Midi' },
@@ -68,7 +69,10 @@ export default function Planner({ token, firstname, onLogout, today }) {
   return (
     <div className="page">
       <header className="masthead">
-        <p className="brand">Semainier</p>
+        <div className="masthead-start">
+          <p className="brand">Semainier</p>
+          <a className="back-link" href={RECETTEVIE_URL}>Toutes les recettes sur RecetteVie</a>
+        </div>
         <p className="account">
           {firstname ? `Bonjour ${firstname}` : 'Connecté'}
           <button type="button" className="link" onClick={() => onLogout()}>Se déconnecter</button>
@@ -111,11 +115,11 @@ export default function Planner({ token, firstname, onLogout, today }) {
       </main>
 
       <footer className="footer">
-        <p>Semainier · projet portfolio de puremax-lab · recettes et photos de <a href="https://puremax-lab.alwaysdata.net/recettevie">RecetteVie</a></p>
+        <p>Semainier · projet portfolio de puremax-lab · recettes et photos de <a href={RECETTEVIE_URL}>RecetteVie</a></p>
         <p>
           <a href="https://github.com/puremax-lab/Semainier">Code source</a>
           <a href="https://github.com/puremax-lab">GitHub puremax-lab</a>
-          <a href="https://puremax-lab.alwaysdata.net/recettevie/mentions-legales">Mentions légales</a>
+          <a href={`${RECETTEVIE_URL}/mentions-legales`}>Mentions légales</a>
         </p>
       </footer>
 

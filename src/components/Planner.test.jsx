@@ -39,6 +39,14 @@ describe('Planner', () => {
     expect(within(list).getByText('2 sur 2 à acheter')).toBeInTheDocument()
   })
 
+  it('links back to RecetteVie from the header', async () => {
+    mockApi()
+    render(<Planner token="t" onLogout={() => {}} today={monday} />)
+
+    expect(screen.getByRole('link', { name: 'Toutes les recettes sur RecetteVie' })).toHaveAttribute('href', 'https://puremax-lab.alwaysdata.net/recettevie')
+    await screen.findByRole('region', { name: 'Liste de courses' })
+  })
+
   it('asks the API for the displayed week only', async () => {
     const calls = mockApi()
     render(<Planner token="t" onLogout={() => {}} today={monday} />)

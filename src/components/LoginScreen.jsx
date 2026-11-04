@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { login } from '../lib/api.js'
+import { RECETTEVIE_URL } from '../lib/links.js'
 
 const DEMO_ACCOUNT = { email: 'camille@recettevie.test', password: 'password' }
 
@@ -32,7 +33,7 @@ export default function LoginScreen({ notice, onLogin }) {
         <p className="kicker">Semainier</p>
         <h1>Les repas de la semaine, sur une seule page.</h1>
         <p className="lead">
-          Choisissez une recette de <a href="https://puremax-lab.alwaysdata.net/recettevie">RecetteVie</a> pour
+          Choisissez une recette de <a href={RECETTEVIE_URL}>RecetteVie</a> pour
           chaque midi et chaque soir. La liste de courses se fait toute seule.
         </p>
       </div>
@@ -55,6 +56,9 @@ export default function LoginScreen({ notice, onLogin }) {
 
         <p className="demo">
           Pour essayer : <button type="button" className="link" onClick={fillDemo}>remplir avec le compte de démonstration</button>
+        </p>
+        <p className="demo">
+          Pas encore de compte ? <a href={`${RECETTEVIE_URL}/inscription`}>Créez-le sur RecetteVie</a>, il sert aussi ici.
         </p>
       </form>
     </main>

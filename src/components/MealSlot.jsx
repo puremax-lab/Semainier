@@ -1,6 +1,7 @@
 import { imageUrl } from '../lib/api.js'
 import { formatDuration } from '../lib/format.js'
 import RecipeImage from './RecipeImage.jsx'
+import { RECETTEVIE_URL } from '../lib/links.js'
 
 export default function MealSlot({ label, entry, onAdd, onRemove }) {
   if (!entry) {
@@ -18,7 +19,7 @@ export default function MealSlot({ label, entry, onAdd, onRemove }) {
       <span className="slot-label">{label}</span>
       <RecipeImage src={imageUrl(recipe.imageName)} title={recipe.title} />
       <h3 className="slot-title">
-        <a href={`https://puremax-lab.alwaysdata.net/recettevie/recettes/${recipe.slug}-${recipe.id}`} target="_blank" rel="noopener">{recipe.title}</a>
+        <a href={`${RECETTEVIE_URL}/recettes/${recipe.slug}-${recipe.id}`} target="_blank" rel="noopener">{recipe.title}</a>
       </h3>
       <p className="slot-meta">{formatDuration(recipe.duration)}</p>
       <div className="slot-actions">

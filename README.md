@@ -18,7 +18,7 @@ Click **remplir avec le compte de démonstration**, then **Se connecter** (it is
 
 ## Two apps, one API
 
-Semainier has no server of its own. It is a front end for [RecetteVie](https://github.com/puremax-lab/RecetteVie), my Symfony recipe website, to which I added a REST API with API Platform. The recipes, the accounts and the meal plans all live in RecetteVie, and RecetteVie links to Semainier from its menu, its home page and its footer: for a visitor, the two apps feel like one site.
+Semainier has no server of its own. It is a front end for [RecetteVie](https://github.com/puremax-lab/RecetteVie), my Symfony recipe website, to which I added a REST API with API Platform. The recipes, the accounts and the meal plans all live in RecetteVie, and RecetteVie links to Semainier from its menu, its home page and its footer, and Semainier links back from its header ("Toutes les recettes sur RecetteVie") and its login screen, where a visitor without an account is sent to the RecetteVie sign-up page: for a visitor, the two apps feel like one site.
 
 ```mermaid
 sequenceDiagram
@@ -53,7 +53,7 @@ sequenceDiagram
 - **Side panel** with the native `<dialog>` element: focus kept inside, closed with Escape.
 - **Shopping list logic** as a pure function ([`shopping.js`](src/lib/shopping.js)): lines are compared without case, accents or extra spaces ("3 œufs" and "3 oeufs" stay apart, "Sel, poivre" and "sel, poivre" merge).
 - **One domain online**: both apps are served from `puremax-lab.alwaysdata.net`, so the browser needs no CORS. In development, Vite forwards `/api` to RecetteVie ([`vite.config.js`](vite.config.js)).
-- **Tests** with Vitest and Testing Library (16 tests): dates, shopping list, session, login screen, and the planner with a mocked API (plan, remove, logout on 401). They run on every push with GitHub Actions, with the linter (oxlint) and the build.
+- **Tests** with Vitest and Testing Library (18 tests): dates, shopping list, session, login screen, the links back to RecetteVie, and the planner with a mocked API (plan, remove, logout on 401). They run on every push with GitHub Actions, with the linter (oxlint) and the build.
 
 On the RecetteVie side, the API work is described in [its README](https://github.com/puremax-lab/RecetteVie#technical-highlights): read-only recipes, a `MealPlanEntry` resource limited to its owner, JWT login.
 
