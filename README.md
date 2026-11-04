@@ -5,6 +5,8 @@
 
 ### 👉 [Try the live demo](https://puremax-lab.alwaysdata.net/semainier)
 
+You can also open it from RecetteVie, with **Planifier mes repas** in the menu.
+
 Click **remplir avec le compte de démonstration**, then **Se connecter** (it is the RecetteVie demo account: `camille@recettevie.test` / `password`).
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
@@ -16,7 +18,7 @@ Click **remplir avec le compte de démonstration**, then **Se connecter** (it is
 
 ## Two apps, one API
 
-Semainier has no server of its own. It is a front end for [RecetteVie](https://github.com/puremax-lab/RecetteVie), my Symfony recipe website, to which I added a REST API with API Platform. The recipes, the accounts and the meal plans all live in RecetteVie.
+Semainier has no server of its own. It is a front end for [RecetteVie](https://github.com/puremax-lab/RecetteVie), my Symfony recipe website, to which I added a REST API with API Platform. The recipes, the accounts and the meal plans all live in RecetteVie, and RecetteVie links to Semainier from its menu, its home page and its footer: for a visitor, the two apps feel like one site.
 
 ```mermaid
 sequenceDiagram
@@ -39,6 +41,7 @@ sequenceDiagram
 - **Move between weeks**: previous, current, next.
 - **Shopping list**: the ingredients of the week's recipes, each line once, with the recipes it is for. Lines can be ticked off, and are remembered per week in the browser.
 - **Responsive**: 7 columns on a desktop, the days one under the other on a phone.
+- **Link preview**: Open Graph tags and a preview image, so a shared link shows a card on LinkedIn or in a chat.
 
 ## How it is built
 
@@ -50,7 +53,7 @@ sequenceDiagram
 - **Side panel** with the native `<dialog>` element: focus kept inside, closed with Escape.
 - **Shopping list logic** as a pure function ([`shopping.js`](src/lib/shopping.js)): lines are compared without case, accents or extra spaces ("3 œufs" and "3 oeufs" stay apart, "Sel, poivre" and "sel, poivre" merge).
 - **One domain online**: both apps are served from `puremax-lab.alwaysdata.net`, so the browser needs no CORS. In development, Vite forwards `/api` to RecetteVie ([`vite.config.js`](vite.config.js)).
-- **Tests** with Vitest and Testing Library: dates, shopping list, session, login screen, and the planner with a mocked API (plan, remove, logout on 401). They run on every push with GitHub Actions, with the linter and the build.
+- **Tests** with Vitest and Testing Library (16 tests): dates, shopping list, session, login screen, and the planner with a mocked API (plan, remove, logout on 401). They run on every push with GitHub Actions, with the linter (oxlint) and the build.
 
 On the RecetteVie side, the API work is described in [its README](https://github.com/puremax-lab/RecetteVie#technical-highlights): read-only recipes, a `MealPlanEntry` resource limited to its owner, JWT login.
 
