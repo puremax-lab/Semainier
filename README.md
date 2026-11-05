@@ -7,7 +7,7 @@
 
 You can also open it from RecetteVie, with **Planifier mes repas** (**Plan my meals** in English) in the menu.
 
-The app is in French by default: switch to English with **EN** at the top right. Click **fill in the demo account**, then **Log in** (it is the RecetteVie demo account: `camille@recettevie.test` / `password`).
+The app opens in the language of your browser, French if it is neither French nor English: switch with **FR** / **EN** at the top right. Click **fill in the demo account**, then **Log in** (it is the RecetteVie demo account: `camille@recettevie.test` / `password`).
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
@@ -40,7 +40,7 @@ sequenceDiagram
 - **Plan the week**: a lunch and a dinner for each of the 7 days. Pick a recipe in a side panel with search and infinite scroll, change it or remove it.
 - **Move between weeks**: previous, current, next.
 - **Shopping list**: the ingredients of the week's recipes, each line once, with the recipes it is for. Lines can be ticked off, and are remembered per week in the browser.
-- **French and English**: a FR / EN switch on the login screen and in the header changes the whole app at once, with no reload. The choice is remembered in the browser, French is the default. Recipe titles, ingredients, categories, dates and durations follow the language, and the search looks in the titles of the chosen language.
+- **French and English**: a FR / EN switch on the login screen and in the header changes the whole app at once, with no reload. A first visit follows the language of the browser, with French for any language other than French or English, and the visitor's choice is then remembered in the browser. Recipe titles, ingredients, categories, dates and durations follow the language, and the search looks in the titles of the chosen language.
 - **Responsive**: 7 columns on a desktop, the days one under the other on a phone.
 - **Link preview**: Open Graph tags and a preview image, so a shared link shows a card on LinkedIn or in a chat.
 
@@ -55,7 +55,7 @@ sequenceDiagram
 - **Shopping list logic** as a pure function ([`shopping.js`](src/lib/shopping.js)): lines are compared without case, accents or extra spaces ("3 œufs" and "3 oeufs" stay apart, "Sel, poivre" and "sel, poivre" merge).
 - **Translations without a library** ([`messages.js`](src/i18n/messages.js), [`language.js`](src/i18n/language.js)): one dictionary per language and a React context. The API returns both languages of a recipe, so switching needs no new request. If a recipe has no English text, the French one is shown ([`recipe.js`](src/lib/recipe.js)). Errors travel as translation keys, so a message on screen changes with the language too.
 - **One domain online**: both apps are served from `puremax-lab.alwaysdata.net`, so the browser needs no CORS. In development, Vite forwards `/api` to RecetteVie ([`vite.config.js`](vite.config.js)).
-- **Tests** with Vitest and Testing Library (28 tests): dates, shopping list, session, login screen, the links back to RecetteVie, the planner with a mocked API (plan, remove, logout on 401) and the language switch (live change, remembered choice, English search, same keys in both languages). They run on every push with GitHub Actions, with the linter (oxlint) and the build.
+- **Tests** with Vitest and Testing Library (34 tests): dates, shopping list, session, login screen, the links back to RecetteVie, the planner with a mocked API (plan, remove, logout on 401) and the language switch (browser language on a first visit, live change, remembered choice, English search, same keys in both languages). They run on every push with GitHub Actions, with the linter (oxlint) and the build.
 
 On the RecetteVie side, the API work is described in [its README](https://github.com/puremax-lab/RecetteVie#technical-highlights): read-only recipes, a `MealPlanEntry` resource limited to its owner, JWT login.
 

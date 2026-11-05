@@ -34,6 +34,30 @@ describe('language', () => {
     expect(document.documentElement.lang).toBe('fr')
   })
 
+  it.each([
+    ['en-GB', 'Log in'],
+    ['en', 'Log in'],
+    ['fr-BE', 'Connexion'],
+    ['de-DE', 'Connexion'],
+    ['es', 'Connexion'],
+  ])('follows a browser set to %s on the first visit', (browser, heading) => {
+    vi.spyOn(navigator, 'language', 'get').mockReturnValue(browser)
+    render(<App />)
+
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(heading)
+  })
+
+  it('keeps the chosen language over the language of the browser', async () => {
+    vi.spyOn(navigator, 'language', 'get').mockReturnValue('en-GB')
+    const { unmount } = render(<App />)
+    await userEvent.click(screen.getByRole('button', { name: 'FR' }))
+    unmount()
+
+    render(<App />)
+
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Connexion')
+  })
+
   it('switches the login screen, the page title and the lang attribute live', async () => {
     render(<App />)
 

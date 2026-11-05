@@ -4,13 +4,19 @@ import { LANGUAGES, MESSAGES } from './messages.js'
 const KEY = 'semainier.lang'
 const DEFAULT = 'fr'
 
-export function loadLanguage() {
+function storedLanguage() {
   try {
-    const stored = localStorage.getItem(KEY)
-    return LANGUAGES.includes(stored) ? stored : DEFAULT
+    return localStorage.getItem(KEY)
   } catch {
-    return DEFAULT
+    return null
   }
+}
+
+/** The visitor's choice, or else the browser's language: English stays English, anything else gives French. */
+export function loadLanguage() {
+  const stored = storedLanguage()
+  if (LANGUAGES.includes(stored)) return stored
+  return /^en\b/i.test(navigator.language) ? 'en' : DEFAULT
 }
 
 export function saveLanguage(lang) {
