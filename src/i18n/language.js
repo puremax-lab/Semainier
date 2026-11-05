@@ -12,11 +12,11 @@ function storedLanguage() {
   }
 }
 
-/** The visitor's choice, or else the browser's language: English stays English, anything else gives French. */
+/** The visitor's choice, or else the browser's language: French stays French, anything else gives English. */
 export function loadLanguage() {
   const stored = storedLanguage()
   if (LANGUAGES.includes(stored)) return stored
-  return /^en\b/i.test(navigator.language) ? 'en' : DEFAULT
+  return /^(?!fr\b)[a-z]/i.test(navigator.language) ? 'en' : DEFAULT
 }
 
 export function saveLanguage(lang) {

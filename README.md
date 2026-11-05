@@ -7,7 +7,7 @@
 
 You can also open it from RecetteVie, with **Planifier mes repas** (**Plan my meals** in English) in the menu.
 
-The app opens in the language of your browser, French if it is neither French nor English: switch with **FR** / **EN** at the top right. Click **fill in the demo account**, then **Log in** (it is the RecetteVie demo account: `camille@recettevie.test` / `password`).
+The app opens in the language of your browser, English if it is neither French nor English: switch with **FR** / **EN** at the top right. Click **fill in the demo account**, then **Log in** (it is the RecetteVie demo account: `camille@recettevie.test` / `password`).
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
@@ -40,7 +40,7 @@ sequenceDiagram
 - **Plan the week**: a lunch and a dinner for each of the 7 days. Pick a recipe in a side panel with search and infinite scroll, change it or remove it.
 - **Move between weeks**: previous, current, next.
 - **Shopping list**: the ingredients of the week's recipes, each line once, with the recipes it is for. Lines can be ticked off, and are remembered per week in the browser.
-- **French and English**: a FR / EN switch on the login screen and in the header changes the whole app at once, with no reload. A first visit follows the language of the browser, with French for any language other than French or English, and the visitor's choice is then remembered in the browser. Recipe titles, ingredients, categories, dates and durations follow the language, and the search looks in the titles of the chosen language.
+- **French and English**: a FR / EN switch on the login screen and in the header changes the whole app at once, with no reload. A first visit follows the language of the browser, with English for any language other than French or English, and the visitor's choice is then remembered in the browser. Recipe titles, ingredients, categories, dates and durations follow the language, and the search looks in the titles of the chosen language.
 - **Responsive**: 7 columns on a desktop, the days one under the other on a phone.
 - **Link preview**: Open Graph tags and a preview image, so a shared link shows a card on LinkedIn or in a chat.
 

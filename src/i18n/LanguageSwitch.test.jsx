@@ -38,8 +38,8 @@ describe('language', () => {
     ['en-GB', 'Log in'],
     ['en', 'Log in'],
     ['fr-BE', 'Connexion'],
-    ['de-DE', 'Connexion'],
-    ['es', 'Connexion'],
+    ['de-DE', 'Log in'],
+    ['es', 'Log in'],
   ])('follows a browser set to %s on the first visit', (browser, heading) => {
     vi.spyOn(navigator, 'language', 'get').mockReturnValue(browser)
     render(<App />)
